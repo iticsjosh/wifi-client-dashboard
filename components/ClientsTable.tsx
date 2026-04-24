@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import type { Client } from '@/lib/dynamodb';
+import type { Client } from '@/lib/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
