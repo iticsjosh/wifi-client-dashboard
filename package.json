@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "next dev --port 3001",
     "build": "next build",
+    "build:worker": "opennextjs-cloudflare build",
     "start": "next start --port 3001",
-    "pages:build": "npx @cloudflare/next-on-pages@1",
-    "preview": "npm run pages:build && wrangler pages dev"
+    "preview": "npm run build && npm run build:worker && wrangler pages dev"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.19.4",

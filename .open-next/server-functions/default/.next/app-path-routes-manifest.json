@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/clients/[clientId]/extend/route": "/api/clients/[clientId]/extend",
+  "/api/clients/[clientId]/route": "/api/clients/[clientId]",
+  "/api/clients/bulk-delete/route": "/api/clients/bulk-delete",
+  "/api/clients/bulk-extend/route": "/api/clients/bulk-extend",
+  "/api/clients/route": "/api/clients",
+  "/page": "/"
+}

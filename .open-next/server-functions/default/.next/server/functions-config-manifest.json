@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "functions": {
+    "/": {},
+    "/api/clients": {},
+    "/api/clients/[clientId]": {},
+    "/api/clients/[clientId]/extend": {},
+    "/api/clients/bulk-delete": {},
+    "/api/clients/bulk-extend": {}
+  }
+}

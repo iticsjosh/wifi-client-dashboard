@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/clients/[clientId]/extend/route": "app-edge-has-no-entrypoint",
+  "/api/clients/[clientId]/route": "app-edge-has-no-entrypoint",
+  "/api/clients/bulk-delete/route": "app-edge-has-no-entrypoint",
+  "/api/clients/bulk-extend/route": "app-edge-has-no-entrypoint",
+  "/api/clients/route": "app-edge-has-no-entrypoint",
+  "/page": "app-edge-has-no-entrypoint"
+}
