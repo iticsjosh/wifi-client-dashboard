@@ -1,15 +1,18 @@
-import { fetchClients } from '@/lib/api';
+import { getClients } from './actions';
 import ClientsTable from '@/components/ClientsTable';
+import type { Client } from '@/lib/types';
 
-export const runtime = 'edge';
-export const dynamic = 'force-dynamic';
+// Always re-fetch on each request — the upstream is a small, internal API and
+// freshness matters more than caching here. Tag-based revalidation is wired up
+// in `app/actions.ts` for future use.
+export const revalidate = 0;
 
 export default async function DashboardPage() {
-  let clients: Awaited<ReturnType<typeof fetchClients>> = [];
+  let clients: Client[] = [];
   let fetchError: string | null = null;
 
   try {
-    clients = await fetchClients();
+    clients = await getClients();
   } catch (err) {
     fetchError = err instanceof Error ? err.message : 'Failed to load clients.';
   }
@@ -19,7 +22,9 @@ export default async function DashboardPage() {
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-screen-xl mx-auto">
           <h1 className="text-xl font-semibold text-gray-900">WiFi Client Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Meraki splash page authorization manager</p>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Meraki splash page authorization manager
+          </p>
         </div>
       </header>
 

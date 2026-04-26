@@ -3629,7 +3629,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/node_modules/next/dist/server/load-manifest.external.js": {
-      "bytes": 35463,
+      "bytes": 30495,
       "imports": [
         {
           "path": "path",
@@ -3677,6 +3677,28 @@
           "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/action-async-storage-instance.js",
           "kind": "require-call",
           "original": "./action-async-storage-instance"
+        }
+      ],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage-instance.js": {
+      "bytes": 475,
+      "imports": [
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/async-local-storage.js",
+          "kind": "require-call",
+          "original": "./async-local-storage"
+        }
+      ],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage.external.js": {
+      "bytes": 443,
+      "imports": [
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage-instance.js",
+          "kind": "require-call",
+          "original": "./dynamic-access-async-storage-instance"
         }
       ],
       "format": "cjs"
@@ -3922,7 +3944,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js": {
-      "bytes": 604941,
+      "bytes": 604950,
       "imports": [
         {
           "path": "url",
@@ -4062,45 +4084,59 @@
         {
           "path": ".open-next/server-functions/default/composable-cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/composable-cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/composable-cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/composable-cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/composable-cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/composable-cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/cache.cjs"
         }
       ],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage-instance.js": {
-      "bytes": 475,
-      "imports": [
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/async-local-storage.js",
-          "kind": "require-call",
-          "original": "./async-local-storage"
-        }
-      ],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage.external.js": {
-      "bytes": 443,
-      "imports": [
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage-instance.js",
-          "kind": "require-call",
-          "original": "./dynamic-access-async-storage-instance"
-        }
-      ],
-      "format": "cjs"
-    },
-    ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0-qngk4._.js": {
+    ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__04nuite._.js": {
       "bytes": 2721,
+      "imports": [
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/work-async-storage.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-unit-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/work-unit-async-storage.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/action-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/action-async-storage.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/after-task-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/after-task-async-storage.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage.external.js",
+          "kind": "require-call",
+          "original": "next/dist/server/app-render/dynamic-access-async-storage.external.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
+          "kind": "require-call",
+          "original": "next/dist/compiled/next-server/app-page-turbo.runtime.prod.js"
+        }
+      ],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0_iy31v._.js": {
+      "bytes": 1458,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
@@ -4146,42 +4182,6 @@
       ],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0vwjl6y._.js": {
-      "bytes": 1355,
-      "imports": [
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
-          "kind": "require-call",
-          "original": "next/dist/compiled/next-server/app-page-turbo.runtime.prod.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-async-storage.external.js",
-          "kind": "require-call",
-          "original": "next/dist/server/app-render/work-async-storage.external.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-unit-async-storage.external.js",
-          "kind": "require-call",
-          "original": "next/dist/server/app-render/work-unit-async-storage.external.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/action-async-storage.external.js",
-          "kind": "require-call",
-          "original": "next/dist/server/app-render/action-async-storage.external.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/after-task-async-storage.external.js",
-          "kind": "require-call",
-          "original": "next/dist/server/app-render/after-task-async-storage.external.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage.external.js",
-          "kind": "require-call",
-          "original": "next/dist/server/app-render/dynamic-access-async-storage.external.js"
-        }
-      ],
-      "format": "cjs"
-    },
     ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0zgvpt1._.js": {
       "bytes": 220008,
       "imports": [
@@ -4218,8 +4218,8 @@
       "imports": [],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_0.jrk~x._.js": {
-      "bytes": 74783,
+    ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_01.gs5h._.js": {
+      "bytes": 74680,
       "imports": [],
       "format": "cjs"
     },
@@ -4249,8 +4249,8 @@
       ],
       "format": "cjs"
     },
-    ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__09bxbeh._.js": {
-      "bytes": 7201,
+    ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__01cvcj4._.js": {
+      "bytes": 7304,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js",
@@ -4317,8 +4317,40 @@
       ],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0itp_3k._.js": {
+      "bytes": 3138,
+      "imports": [
+        {
+          "path": ".open-next/server-functions/default/node_modules/next/dist/shared/lib/no-fallback-error.external.js",
+          "kind": "require-call",
+          "original": "next/dist/shared/lib/no-fallback-error.external.js"
+        }
+      ],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/chunks/ssr/_0a3ct21._.js": {
+      "bytes": 18603,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/chunks/ssr/_0k3v8o5._.js": {
+      "bytes": 2917,
+      "imports": [],
+      "format": "cjs"
+    },
+    ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0yygy7n.js": {
+      "bytes": 22414,
+      "imports": [
+        {
+          "path": "path",
+          "kind": "require-call",
+          "external": true
+        }
+      ],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js": {
-      "bytes": 39498,
+      "bytes": 40540,
       "imports": [
         {
           "path": "worker_threads",
@@ -4351,94 +4383,114 @@
           "external": true
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0-qngk4._.js",
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__04nuite._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0-qngk4._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__04nuite._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0_iy31v._.js",
+          "kind": "require-call",
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0_iy31v._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0floa9z._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0floa9z._.js"
-        },
-        {
-          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0vwjl6y._.js",
-          "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0vwjl6y._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0floa9z._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0zgvpt1._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0zgvpt1._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0zgvpt1._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__not-found_page_actions_0eq97pa.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__not-found_page_actions_0eq97pa.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__not-found_page_actions_0eq97pa.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/app_layout_tsx_13yf0ls._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/app_layout_tsx_13yf0ls._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/app_layout_tsx_13yf0ls._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_09w7yel._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_09w7yel._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_09w7yel._.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_0.jrk~x._.js",
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_01.gs5h._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_0.jrk~x._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_01.gs5h._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_0inhx6q._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_0inhx6q._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_0inhx6q._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_forbidden_0ghu-f7.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_forbidden_0ghu-f7.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_forbidden_0ghu-f7.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthorized_0cjv-23.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthorized_0cjv-23.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_unauthorized_0cjv-23.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0m-ur85.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0m-ur85.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0m-ur85.js"
         },
         {
-          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__09bxbeh._.js",
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__01cvcj4._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__09bxbeh._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__01cvcj4._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0plpk7f._.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0plpk7f._.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0plpk7f._.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__global-error_page_actions_0k77kol.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__global-error_page_actions_0k77kol.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__global-error_page_actions_0k77kol.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0lgvd_..js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0lgvd_..js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_builtin_global-error_0lgvd_..js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0rc3ul_.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0rc3ul_.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0rc3ul_.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0itp_3k._.js",
+          "kind": "require-call",
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0itp_3k._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/_0a3ct21._.js",
+          "kind": "require-call",
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/_0a3ct21._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/_0k3v8o5._.js",
+          "kind": "require-call",
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/_0k3v8o5._.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0yygy7n.js",
+          "kind": "require-call",
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0yygy7n.js"
         },
         {
           "path": "<runtime>",
@@ -4470,8 +4522,19 @@
       ],
       "format": "cjs"
     },
+    ".open-next/server-functions/default/.next/server/app/page.js": {
+      "bytes": 851,
+      "imports": [
+        {
+          "path": ".open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js",
+          "kind": "require-call",
+          "original": "../chunks/ssr/[turbopack]_runtime.js"
+        }
+      ],
+      "format": "cjs"
+    },
     ".open-next/server-functions/default/node_modules/next/dist/server/require.js": {
-      "bytes": 4677,
+      "bytes": 4914,
       "imports": [
         {
           "path": "path",
@@ -4521,12 +4584,17 @@
         {
           "path": ".open-next/server-functions/default/.next/server/app/_global-error/page.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/app/_global-error/page.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/app/_global-error/page.js"
         },
         {
           "path": ".open-next/server-functions/default/.next/server/app/_not-found/page.js",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/.next/server/app/_not-found/page.js"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/app/_not-found/page.js"
+        },
+        {
+          "path": ".open-next/server-functions/default/.next/server/app/page.js",
+          "kind": "require-call",
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/.next/server/app/page.js"
         }
       ],
       "format": "cjs"
@@ -5049,7 +5117,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/pages-turbo.runtime.prod.js": {
-      "bytes": 121273,
+      "bytes": 121282,
       "imports": [
         {
           "path": "url",
@@ -5144,17 +5212,17 @@
         {
           "path": ".open-next/server-functions/default/composable-cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/composable-cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/composable-cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/composable-cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/composable-cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/composable-cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/node_modules/react/jsx-runtime.js",
@@ -5355,7 +5423,7 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/node_modules/next/dist/server/next-server.js": {
-      "bytes": 50343,
+      "bytes": 50352,
       "imports": [
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/server/node-environment.js",
@@ -5665,17 +5733,17 @@
         {
           "path": ".open-next/server-functions/default/composable-cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/composable-cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/composable-cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/composable-cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/composable-cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/composable-cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/cache.cjs",
           "kind": "require-call",
-          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD/.open-next/server-functions/default/cache.cjs"
+          "original": "/Users/joshua/Downloads/DEV/ICS-Projects/WIFI_CLIENT_EXTEND_DASHBOARD_V2/.open-next/server-functions/default/cache.cjs"
         },
         {
           "path": ".open-next/server-functions/default/node_modules/next/dist/experimental/testmode/server.js",
@@ -5686,12 +5754,12 @@
       "format": "cjs"
     },
     ".open-next/server-functions/default/open-next.config.mjs": {
-      "bytes": 6995,
+      "bytes": 7033,
       "imports": [],
       "format": "esm"
     },
     ".open-next/server-functions/default/index.mjs": {
-      "bytes": 92531,
+      "bytes": 82779,
       "imports": [
         {
           "path": "node:module",
@@ -5996,6 +6064,11 @@
           "external": true
         },
         {
+          "path": "path",
+          "kind": "require-call",
+          "external": true
+        },
+        {
           "path": "worker_threads",
           "kind": "require-call",
           "external": true
@@ -6209,7 +6282,7 @@
           "bytesInOutput": 970
         },
         ".open-next/server-functions/default/node_modules/next/dist/client/lib/console.js": {
-          "bytesInOutput": 2751
+          "bytesInOutput": 2835
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/node-environment-extensions/console-file.js": {
           "bytesInOutput": 364
@@ -6227,7 +6300,7 @@
           "bytesInOutput": 497
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/app-render/staged-rendering.js": {
-          "bytesInOutput": 6033
+          "bytesInOutput": 6038
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-unit-async-storage.external.js": {
           "bytesInOutput": 5795
@@ -6245,7 +6318,7 @@
           "bytesInOutput": 6147
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/node-environment-extensions/unhandled-rejection.external.js": {
-          "bytesInOutput": 12058
+          "bytesInOutput": 12071
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/app-render/work-async-storage-instance.js": {
           "bytesInOutput": 491
@@ -6281,13 +6354,13 @@
           "bytesInOutput": 458
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-rendering.js": {
-          "bytesInOutput": 32154
+          "bytesInOutput": 32150
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/node-environment-extensions/io-utils.js": {
           "bytesInOutput": 7903
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/node-environment-extensions/random.js": {
-          "bytesInOutput": 640
+          "bytesInOutput": 638
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/node-environment-extensions/date.js": {
           "bytesInOutput": 1201
@@ -6299,7 +6372,7 @@
           "bytesInOutput": 3462
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/node-environment-extensions/fast-set-immediate.external.js": {
-          "bytesInOutput": 10859
+          "bytesInOutput": 10857
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/node-environment.js": {
           "bytesInOutput": 474
@@ -6311,7 +6384,7 @@
           "bytesInOutput": 3256
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/path-to-regexp/index.js": {
-          "bytesInOutput": 7382
+          "bytesInOutput": 7376
         },
         ".open-next/server-functions/default/node_modules/next/dist/lib/route-pattern-normalizer.js": {
           "bytesInOutput": 1954
@@ -6332,7 +6405,7 @@
           "bytesInOutput": 910
         },
         ".open-next/server-functions/default/node_modules/next/dist/shared/lib/constants.js": {
-          "bytesInOutput": 9412
+          "bytesInOutput": 9410
         },
         ".open-next/server-functions/default/node_modules/next/dist/lib/find-pages-dir.js": {
           "bytesInOutput": 1451
@@ -6347,13 +6420,13 @@
           "bytesInOutput": 9944
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/lib/trace/constants.js": {
-          "bytesInOutput": 6863
+          "bytesInOutput": 6839
         },
         ".open-next/server-functions/default/node_modules/next/dist/shared/lib/is-thenable.js": {
           "bytesInOutput": 426
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/@opentelemetry/api/index.js": {
-          "bytesInOutput": 28665
+          "bytesInOutput": 28659
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/lib/trace/tracer.js": {
           "bytesInOutput": 5650
@@ -6365,7 +6438,7 @@
           "bytesInOutput": 3830
         },
         ".open-next/server-functions/default/node_modules/next/dist/client/components/redirect-status-code.js": {
-          "bytesInOutput": 933
+          "bytesInOutput": 931
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/api-utils/get-cookie-parser.js": {
           "bytesInOutput": 530
@@ -6410,13 +6483,13 @@
           "bytesInOutput": 859
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/bytes/index.js": {
-          "bytesInOutput": 1577
+          "bytesInOutput": 1575
         },
         ".open-next/server-functions/default/node_modules/next/dist/shared/lib/size-limit.js": {
           "bytesInOutput": 825
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/config-shared.js": {
-          "bytesInOutput": 8530
+          "bytesInOutput": 8546
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/lib/is-ipv6.js": {
           "bytesInOutput": 936
@@ -6566,7 +6639,7 @@
           "bytesInOutput": 2695
         },
         ".open-next/server-functions/default/node_modules/next/dist/shared/lib/router/utils/interception-prefix-from-param-type.js": {
-          "bytesInOutput": 808
+          "bytesInOutput": 861
         },
         ".open-next/server-functions/default/node_modules/next/dist/shared/lib/router/utils/resolve-param-value.js": {
           "bytesInOutput": 2506
@@ -6632,7 +6705,7 @@
           "bytesInOutput": 660
         },
         ".open-next/server-functions/default/node_modules/next/dist/lib/page-types.js": {
-          "bytesInOutput": 423
+          "bytesInOutput": 421
         },
         ".open-next/server-functions/default/node_modules/next/dist/shared/lib/page-path/remove-page-path-tail.js": {
           "bytesInOutput": 654
@@ -6665,7 +6738,7 @@
           "bytesInOutput": 1248
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/route-kind.js": {
-          "bytesInOutput": 496
+          "bytesInOutput": 494
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/route-matchers/app-page-route-matcher.js": {
           "bytesInOutput": 540
@@ -6776,7 +6849,7 @@
           "bytesInOutput": 909
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/web/globals.js": {
-          "bytesInOutput": 1800
+          "bytesInOutput": 2871
         },
         ".open-next/server-functions/default/node_modules/next/dist/shared/lib/action-revalidation-kind.js": {
           "bytesInOutput": 699
@@ -6791,7 +6864,7 @@
           "bytesInOutput": 4028
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/p-queue/index.js": {
-          "bytesInOutput": 9783
+          "bytesInOutput": 9745
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/lib/incremental-cache/tags-manifest.external.js": {
           "bytesInOutput": 936
@@ -6842,7 +6915,7 @@
           "bytesInOutput": 10883
         },
         ".open-next/server-functions/default/node_modules/next/dist/lib/fallback.js": {
-          "bytesInOutput": 1839
+          "bytesInOutput": 1837
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/normalizers/request/segment-prefix-rsc.js": {
           "bytesInOutput": 935
@@ -6881,7 +6954,7 @@
           "bytesInOutput": 586
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/load-manifest.external.js": {
-          "bytesInOutput": 26803
+          "bytesInOutput": 22840
         },
         ".open-next/cloudflare-templates/shims/throw.js": {
           "bytesInOutput": 215
@@ -6891,6 +6964,12 @@
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/app-render/action-async-storage.external.js": {
           "bytesInOutput": 464
+        },
+        ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage-instance.js": {
+          "bytesInOutput": 538
+        },
+        ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage.external.js": {
+          "bytesInOutput": 516
         },
         ".open-next/server-functions/default/node_modules/next/dist/lib/interop-default.js": {
           "bytesInOutput": 363
@@ -6911,7 +6990,7 @@
           "bytesInOutput": 319
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/jsonwebtoken/index.js": {
-          "bytesInOutput": 126266
+          "bytesInOutput": 125982
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/app-render/cache-signal.js": {
           "bytesInOutput": 2878
@@ -6923,13 +7002,13 @@
           "bytesInOutput": 729
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/require-hook.js": {
-          "bytesInOutput": 1756
+          "bytesInOutput": 1754
         },
         ".open-next/server-functions/default/node_modules/next/dist/build/adapter/setup-node-env.external.js": {
           "bytesInOutput": 249
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/response-cache/types.js": {
-          "bytesInOutput": 1014
+          "bytesInOutput": 1010
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/lib/incremental-cache/memory-cache.external.js": {
           "bytesInOutput": 1668
@@ -6938,31 +7017,25 @@
           "bytesInOutput": 1273
         },
         ".open-next/server-functions/default/composable-cache.cjs": {
-          "bytesInOutput": 6629
+          "bytesInOutput": 6635
         },
         ".open-next/server-functions/default/cache.cjs": {
           "bytesInOutput": 13441
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.prod.js": {
-          "bytesInOutput": 659793
+          "bytesInOutput": 659652
         },
-        ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage-instance.js": {
-          "bytesInOutput": 538
-        },
-        ".open-next/server-functions/default/node_modules/next/dist/server/app-render/dynamic-access-async-storage.external.js": {
-          "bytesInOutput": 516
-        },
-        ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0-qngk4._.js": {
+        ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__04nuite._.js": {
           "bytesInOutput": 2726
+        },
+        ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0_iy31v._.js": {
+          "bytesInOutput": 1378
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0floa9z._.js": {
           "bytesInOutput": 1635
         },
-        ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0vwjl6y._.js": {
-          "bytesInOutput": 1275
-        },
         ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0zgvpt1._.js": {
-          "bytesInOutput": 232618
+          "bytesInOutput": 232648
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/_next-internal_server_app__not-found_page_actions_0eq97pa.js": {
           "bytesInOutput": 270
@@ -6973,8 +7046,8 @@
         ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_09w7yel._.js": {
           "bytesInOutput": 6038
         },
-        ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_0.jrk~x._.js": {
-          "bytesInOutput": 77304
+        ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_01.gs5h._.js": {
+          "bytesInOutput": 77196
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_client_components_0inhx6q._.js": {
           "bytesInOutput": 2667
@@ -6986,10 +7059,10 @@
           "bytesInOutput": 826
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0m-ur85.js": {
-          "bytesInOutput": 22747
+          "bytesInOutput": 22745
         },
-        ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__09bxbeh._.js": {
-          "bytesInOutput": 7131
+        ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__01cvcj4._.js": {
+          "bytesInOutput": 7234
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0plpk7f._.js": {
           "bytesInOutput": 6243
@@ -7001,10 +7074,22 @@
           "bytesInOutput": 668
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0rc3ul_.js": {
-          "bytesInOutput": 22349
+          "bytesInOutput": 22347
+        },
+        ".open-next/server-functions/default/.next/server/chunks/ssr/[root-of-the-server]__0itp_3k._.js": {
+          "bytesInOutput": 3237
+        },
+        ".open-next/server-functions/default/.next/server/chunks/ssr/_0a3ct21._.js": {
+          "bytesInOutput": 19131
+        },
+        ".open-next/server-functions/default/.next/server/chunks/ssr/_0k3v8o5._.js": {
+          "bytesInOutput": 3071
+        },
+        ".open-next/server-functions/default/.next/server/chunks/ssr/node_modules_next_dist_esm_build_templates_app-page_0yygy7n.js": {
+          "bytesInOutput": 22618
         },
         ".open-next/server-functions/default/.next/server/chunks/ssr/[turbopack]_runtime.js": {
-          "bytesInOutput": 19547
+          "bytesInOutput": 19999
         },
         ".open-next/server-functions/default/.next/server/app/_global-error/page.js": {
           "bytesInOutput": 708
@@ -7012,8 +7097,11 @@
         ".open-next/server-functions/default/.next/server/app/_not-found/page.js": {
           "bytesInOutput": 927
         },
+        ".open-next/server-functions/default/.next/server/app/page.js": {
+          "bytesInOutput": 956
+        },
         ".open-next/server-functions/default/node_modules/next/dist/server/require.js": {
-          "bytesInOutput": 2966
+          "bytesInOutput": 3045
         },
         ".open-next/server-functions/default/node_modules/next/dist/lib/wait.js": {
           "bytesInOutput": 341
@@ -7049,7 +7137,7 @@
           "bytesInOutput": 9685
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/lib/incremental-cache/index.js": {
-          "bytesInOutput": 13713
+          "bytesInOutput": 13745
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/setup-http-agent-env.js": {
           "bytesInOutput": 853
@@ -7082,7 +7170,7 @@
           "bytesInOutput": 406
         },
         ".open-next/server-functions/default/node_modules/react-dom/cjs/react-dom-server.edge.production.js": {
-          "bytesInOutput": 194269
+          "bytesInOutput": 194327
         },
         ".open-next/server-functions/default/node_modules/react-dom/server.edge.js": {
           "bytesInOutput": 434
@@ -7097,13 +7185,13 @@
           "bytesInOutput": 114
         },
         ".open-next/server-functions/default/node_modules/styled-jsx/dist/index/index.js": {
-          "bytesInOutput": 11468
+          "bytesInOutput": 11464
         },
         ".open-next/server-functions/default/node_modules/styled-jsx/index.js": {
           "bytesInOutput": 156
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/next-server/pages-turbo.runtime.prod.js": {
-          "bytesInOutput": 128089
+          "bytesInOutput": 128107
         },
         ".open-next/server-functions/default/node_modules/next/dist/server/route-modules/pages/module.compiled.js": {
           "bytesInOutput": 230
@@ -7145,7 +7233,7 @@
           "bytesInOutput": 2158
         },
         ".open-next/server-functions/default/node_modules/next/dist/compiled/@mswjs/interceptors/ClientRequest/index.js": {
-          "bytesInOutput": 36751
+          "bytesInOutput": 36651
         },
         ".open-next/server-functions/default/node_modules/next/dist/experimental/testmode/httpget.js": {
           "bytesInOutput": 727
@@ -7160,10 +7248,10 @@
           "bytesInOutput": 5074
         },
         ".open-next/server-functions/default/index.mjs": {
-          "bytesInOutput": 65908
+          "bytesInOutput": 56728
         }
       },
-      "bytes": 2382369
+      "bytes": 2419621
     }
   }
 }
