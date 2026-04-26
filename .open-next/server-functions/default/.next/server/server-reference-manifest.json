@@ -1,6 +1,6 @@
 {
   "node": {
-    "00e6e617986972291cfcfe9b9f93d1c470025b4d4f": {
+    "001029d6cd42840f2ceed8ae8d277b5d0bcad0ae69": {
       "workers": {
         "app/page": {
           "moduleId": 57526,
@@ -12,19 +12,7 @@
       "filename": "app/actions.ts",
       "exportedName": "getClients"
     },
-    "40383332847c5db25c5d91f648354bcd7baadcadf6": {
-      "workers": {
-        "app/page": {
-          "moduleId": 57526,
-          "async": false,
-          "exportedName": "bulkDelete",
-          "filename": "app/actions.ts"
-        }
-      },
-      "filename": "app/actions.ts",
-      "exportedName": "bulkDelete"
-    },
-    "40ad42de03ffcb9fb8557ce22f7d7f82b91816a607": {
+    "402083c3c5c9cf8f6c94ffdfd21f630946cbf4b46a": {
       "workers": {
         "app/page": {
           "moduleId": 57526,
@@ -36,7 +24,19 @@
       "filename": "app/actions.ts",
       "exportedName": "bulkExtend"
     },
-    "40d8bff454da18913318060de438f12e88dba6fae1": {
+    "40991031eaffcabbdba25d2ae447249ca7d6b31242": {
+      "workers": {
+        "app/page": {
+          "moduleId": 57526,
+          "async": false,
+          "exportedName": "bulkDelete",
+          "filename": "app/actions.ts"
+        }
+      },
+      "filename": "app/actions.ts",
+      "exportedName": "bulkDelete"
+    },
+    "40a5a00694227ef3cae773e42373a6269a1fa10119": {
       "workers": {
         "app/page": {
           "moduleId": 57526,
@@ -48,7 +48,7 @@
       "filename": "app/actions.ts",
       "exportedName": "extendClient"
     },
-    "40f8b3af52d1a2f558f5a51d214af972c0187f1dee": {
+    "40e1855ae17b58f9bdd49acf8b324d7ed27e779a2a": {
       "workers": {
         "app/page": {
           "moduleId": 57526,
@@ -62,5 +62,5 @@
     }
   },
   "edge": {},
-  "encryptionKey": "6/62QOMggxmD3pL1GpQt73jb/aKOq+WDD+5GA9gvYf8="
+  "encryptionKey": "T6EOEJn7JjAPONOcCLPqGiPLLmrJu6QosBtHJrnm7UY="
 }
