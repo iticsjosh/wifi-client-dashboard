@@ -7,3 +7,8 @@ main = ".open-next/worker.js"
 [assets]
 directory = ".open-next/assets"
 binding = "ASSETS"
+
+# Required secrets — set via: wrangler secret put DASHBOARD_API_URL
+# Do NOT put the actual URL here; use wrangler secrets for sensitive values.
+# [vars]
+# DASHBOARD_API_URL = "https://your-api-gateway-url.execute-api.region.amazonaws.com/stage"

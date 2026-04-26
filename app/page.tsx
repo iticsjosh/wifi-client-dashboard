@@ -5,7 +5,14 @@ export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  const clients = await fetchClients();
+  let clients: Awaited<ReturnType<typeof fetchClients>> = [];
+  let fetchError: string | null = null;
+
+  try {
+    clients = await fetchClients();
+  } catch (err) {
+    fetchError = err instanceof Error ? err.message : 'Failed to load clients.';
+  }
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -17,7 +24,13 @@ export default async function DashboardPage() {
       </header>
 
       <div className="max-w-screen-xl mx-auto px-6 py-6">
-        <ClientsTable initialClients={clients} />
+        {fetchError ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg px-5 py-4 text-sm text-red-700">
+            <strong className="font-medium">Could not load clients:</strong> {fetchError}
+          </div>
+        ) : (
+          <ClientsTable initialClients={clients} />
+        )}
       </div>
     </main>
   );
