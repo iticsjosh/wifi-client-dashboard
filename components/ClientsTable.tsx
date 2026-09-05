@@ -212,7 +212,7 @@ const ClientRow = memo(function ClientRow({
           <button
             type="button"
             onClick={() => onExtend(client.ClientID)}
-            disabled={isLoading || isPendingDelete}
+            disabled={isLoading || isPendingDelete || isPendingRevoke}
             className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? (
@@ -274,7 +274,7 @@ const ClientRow = memo(function ClientRow({
             <button
               type="button"
               onClick={() => onRequestDelete(client.ClientID)}
-              disabled={isLoading}
+              disabled={isLoading || isPendingRevoke}
               className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Delete
