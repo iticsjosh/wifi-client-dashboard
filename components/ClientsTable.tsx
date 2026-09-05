@@ -16,6 +16,7 @@ import {
   deleteClient as deleteClientAction,
   extendClient as extendClientAction,
   getClients as getClientsAction,
+  revokeClient as revokeClientAction,
 } from '@/app/actions';
 import type { Client } from '@/lib/types';
 
@@ -142,11 +143,15 @@ interface RowProps {
   isSelected: boolean;
   isLoading: boolean;
   isPendingDelete: boolean;
+  isPendingRevoke: boolean;
   onToggleSelect: (id: string) => void;
   onExtend: (id: string) => void;
   onRequestDelete: (id: string) => void;
   onCancelDelete: () => void;
   onConfirmDelete: (id: string) => void;
+  onRequestRevoke: (id: string) => void;
+  onCancelRevoke: () => void;
+  onConfirmRevoke: (id: string) => void;
   now: number;
 }
 
@@ -156,11 +161,15 @@ const ClientRow = memo(function ClientRow({
   isSelected,
   isLoading,
   isPendingDelete,
+  isPendingRevoke,
   onToggleSelect,
   onExtend,
   onRequestDelete,
   onCancelDelete,
   onConfirmDelete,
+  onRequestRevoke,
+  onCancelRevoke,
+  onConfirmRevoke,
   now,
 }: RowProps) {
   return (
@@ -214,6 +223,35 @@ const ClientRow = memo(function ClientRow({
             )}
           </button>
 
+          {isPendingRevoke ? (
+            <span className="inline-flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => onConfirmRevoke(client.ClientID)}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 transition-colors"
+              >
+                Cut off?
+              </button>
+              <button
+                type="button"
+                onClick={onCancelRevoke}
+                className="px-2 py-1.5 rounded-md text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
+              >
+                Cancel
+              </button>
+            </span>
+          ) : (
+            <button
+              type="button"
+              onClick={() => onRequestRevoke(client.ClientID)}
+              disabled={isLoading || isPendingDelete}
+              title="Immediately deauthorize this device on Meraki"
+              className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-amber-700 border border-amber-300 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Revoke
+            </button>
+          )}
+
           {isPendingDelete ? (
             <span className="inline-flex items-center gap-1">
               <button
@@ -261,6 +299,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
   const [bulkAction, setBulkAction] = useState<'extend' | 'delete' | null>(null);
   const [bulkConfirm, setBulkConfirm] = useState<'extend' | 'delete' | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [confirmRevokeId, setConfirmRevokeId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isRefreshing, startRefresh] = useTransition();
 
@@ -271,16 +310,19 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
   // A single shared "now" per render avoids hundreds of `Date.now()` calls.
   const now = useMemo(() => Date.now(), [clients]);
 
-  // Auto-cancel row-level delete confirmation after 4 s of inactivity
+  // Auto-cancel row-level delete/revoke confirmation after 4 s of inactivity
   const confirmTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    if (confirmDeleteId) {
-      confirmTimer.current = setTimeout(() => setConfirmDeleteId(null), 4000);
+    if (confirmDeleteId || confirmRevokeId) {
+      confirmTimer.current = setTimeout(() => {
+        setConfirmDeleteId(null);
+        setConfirmRevokeId(null);
+      }, 4000);
     }
     return () => {
       if (confirmTimer.current) clearTimeout(confirmTimer.current);
     };
-  }, [confirmDeleteId]);
+  }, [confirmDeleteId, confirmRevokeId]);
 
   // ── Derived state ──────────────────────────────────────────────────────────
 
@@ -378,6 +420,9 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
   const handleRequestDelete = useCallback((id: string) => setConfirmDeleteId(id), []);
   const handleCancelDelete = useCallback(() => setConfirmDeleteId(null), []);
 
+  const handleRequestRevoke = useCallback((id: string) => setConfirmRevokeId(id), []);
+  const handleCancelRevoke = useCallback(() => setConfirmRevokeId(null), []);
+
   // ── Actions ────────────────────────────────────────────────────────────────
 
   const handleRefresh = useCallback(() => {
@@ -433,6 +478,30 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
         showToast('success', `Deleted: ${clientId}`);
       } catch (err) {
         showToast('error', err instanceof Error ? err.message : 'Delete failed');
+      } finally {
+        setRowLoading((p) => ({ ...p, [clientId]: false }));
+      }
+    },
+    [showToast]
+  );
+
+  const handleConfirmRevoke = useCallback(
+    async (clientId: string) => {
+      setConfirmRevokeId(null);
+      setRowLoading((p) => ({ ...p, [clientId]: true }));
+      try {
+        const data = await revokeClientAction(clientId);
+        const revokedAt = data.revokedAt ?? new Date().toISOString();
+        setClients((p) =>
+          p.map((c) =>
+            c.ClientID === clientId
+              ? { ...c, ExpirationTimestamp: revokedAt, RevokedAt: revokedAt }
+              : c
+          )
+        );
+        showToast('success', `Revoked: ${clientId}`);
+      } catch (err) {
+        showToast('error', err instanceof Error ? err.message : 'Revoke failed');
       } finally {
         setRowLoading((p) => ({ ...p, [clientId]: false }));
       }
@@ -617,11 +686,15 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                     isSelected={selected.has(client.ClientID)}
                     isLoading={!!rowLoading[client.ClientID]}
                     isPendingDelete={confirmDeleteId === client.ClientID}
+                    isPendingRevoke={confirmRevokeId === client.ClientID}
                     onToggleSelect={toggleRow}
                     onExtend={handleExtend}
                     onRequestDelete={handleRequestDelete}
                     onCancelDelete={handleCancelDelete}
                     onConfirmDelete={handleConfirmDelete}
+                    onRequestRevoke={handleRequestRevoke}
+                    onCancelRevoke={handleCancelRevoke}
+                    onConfirmRevoke={handleConfirmRevoke}
                     now={now}
                   />
                 ))
