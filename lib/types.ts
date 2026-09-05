@@ -12,6 +12,8 @@ export interface Client {
   LastRenewed?: string;
   ConnectionCount?: number;
   RenewalCount?: number;
+  RevokedAt?: string;
+  RevokeCount?: number;
   MerakiClientID?: string;
 }
 
@@ -28,5 +30,16 @@ export interface BulkExtendResponse {
 
 export interface BulkDeleteResponse {
   succeeded?: string[];
+  failed?: Array<{ clientId: string; error?: string }>;
+}
+
+export interface RevokeResult {
+  clientId: string;
+  revokedAt?: string;
+  error?: string;
+}
+
+export interface BulkRevokeResponse {
+  succeeded?: Array<{ clientId: string; revokedAt: string }>;
   failed?: Array<{ clientId: string; error?: string }>;
 }

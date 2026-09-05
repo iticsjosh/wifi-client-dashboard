@@ -12,8 +12,10 @@
 import type {
   BulkDeleteResponse,
   BulkExtendResponse,
+  BulkRevokeResponse,
   Client,
   ExtendResult,
+  RevokeResult,
 } from '@/lib/types';
 
 const REQUEST_TIMEOUT_MS = 10_000;
@@ -86,6 +88,13 @@ export async function extendClient(clientId: string): Promise<ExtendResult> {
   );
 }
 
+export async function revokeClient(clientId: string): Promise<RevokeResult> {
+  return apiFetch<RevokeResult>(
+    `/clients/${encodeURIComponent(clientId)}/revoke`,
+    { method: 'POST', body: {} }
+  );
+}
+
 export async function deleteClient(clientId: string): Promise<{ ok: true }> {
   await apiFetch<unknown>(`/clients/${encodeURIComponent(clientId)}`, {
     method: 'DELETE',
@@ -98,6 +107,14 @@ export async function deleteClient(clientId: string): Promise<{ ok: true }> {
 export async function bulkExtend(clientIds: string[]): Promise<BulkExtendResponse> {
   if (clientIds.length === 0) return { succeeded: [], failed: [] };
   return apiFetch<BulkExtendResponse>('/clients/bulk-extend', {
+    method: 'POST',
+    body: { clientIds },
+  });
+}
+
+export async function bulkRevoke(clientIds: string[]): Promise<BulkRevokeResponse> {
+  if (clientIds.length === 0) return { succeeded: [], failed: [] };
+  return apiFetch<BulkRevokeResponse>('/clients/bulk-revoke', {
     method: 'POST',
     body: { clientIds },
   });
