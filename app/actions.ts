@@ -14,8 +14,10 @@ import type {
   BulkExtendResponse,
   BulkRevokeResponse,
   Client,
+  CreateScheduleInput,
   ExtendResult,
   RevokeResult,
+  Schedule,
 } from '@/lib/types';
 
 const REQUEST_TIMEOUT_MS = 10_000;
@@ -126,4 +128,21 @@ export async function bulkDelete(clientIds: string[]): Promise<BulkDeleteRespons
     method: 'POST',
     body: { clientIds },
   });
+}
+
+// ─── Schedules ────────────────────────────────────────────────────────────────
+
+export async function getSchedules(): Promise<Schedule[]> {
+  return apiFetch<Schedule[]>('/schedules');
+}
+
+export async function createSchedule(input: CreateScheduleInput): Promise<Schedule> {
+  return apiFetch<Schedule>('/schedules', { method: 'POST', body: input });
+}
+
+export async function cancelSchedule(scheduleId: string): Promise<{ ok: true }> {
+  await apiFetch<unknown>(`/schedules/${encodeURIComponent(scheduleId)}`, {
+    method: 'DELETE',
+  });
+  return { ok: true };
 }

@@ -43,3 +43,35 @@ export interface BulkRevokeResponse {
   succeeded?: Array<{ clientId: string; revokedAt: string }>;
   failed?: Array<{ clientId: string; error?: string }>;
 }
+
+export type ScheduleKind = 'once' | 'autorenew';
+export type ScheduleAction = 'extend' | 'revoke';
+
+export interface Schedule {
+  ScheduleID: string;
+  Kind: ScheduleKind;
+  Action: ScheduleAction;
+  ClientID: string;
+  /** UTC ISO 8601. */
+  NextRunAt: string;
+  /** UTC ISO 8601. Present on autorenew only. */
+  EndsAt?: string;
+  Enabled: boolean;
+  RunCount?: number;
+  FailureCount?: number;
+  LastRunAt?: string;
+  LastResult?: string;
+  CreatedAt?: string;
+  Note?: string;
+}
+
+export interface CreateScheduleInput {
+  kind: ScheduleKind;
+  action: ScheduleAction;
+  clientId: string;
+  /** Required for `once`. UTC ISO 8601. */
+  runAt?: string;
+  /** Required for `autorenew`. UTC ISO 8601. */
+  endsAt?: string;
+  note?: string;
+}
