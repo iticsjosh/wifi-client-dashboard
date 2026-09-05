@@ -99,7 +99,7 @@ test('merakiUtcToSGT rolls the date forward across midnight', () => {
 
 ```bash
 cd /Users/joshua/Downloads/DEV/ICS-Projects/PROD/radius-auth-ssid-ver2/infrastructure/lambda-src
-node --test shared/
+node --test "shared/*.test.js"
 ```
 
 Expected: FAIL — `Cannot find module './meraki'`.
@@ -202,7 +202,7 @@ module.exports = {
 - [ ] **Step 4: Run the test to verify it passes**
 
 ```bash
-node --test shared/
+node --test "shared/*.test.js"
 ```
 
 Expected: PASS, 2 tests.
@@ -781,7 +781,7 @@ test('autorenew schedules the next run one lead time before the new expiry', () 
         { ok: true, newExpiration: '2026-12-04T04:49:29+08:00' }, NOW, 7
     );
     // 2026-12-04T04:49:29+08:00 is 2026-11-26T20:49:29Z minus 7 days
-    assert.strictEqual(d.nextRunAt, '2026-11-27T20:49:29.000Z');
+    assert.strictEqual(d.nextRunAt, '2026-11-26T20:49:29.000Z');
     assert.strictEqual(d.disable, false);
     assert.strictEqual(d.spawnRevokeAt, null);
 });
@@ -818,7 +818,7 @@ test('autorenew past its EndsAt disables without acting again', () => {
 
 ```bash
 cd /Users/joshua/Downloads/DEV/ICS-Projects/PROD/radius-auth-ssid-ver2/infrastructure/lambda-src
-node --test shared/
+node --test "shared/*.test.js"
 ```
 
 Expected: FAIL — `Cannot find module './schedule-logic'`.
@@ -916,7 +916,7 @@ module.exports = { newScheduleId, dueFilter, advanceSchedule, MAX_CONSECUTIVE_FA
 - [ ] **Step 4: Run to verify they pass**
 
 ```bash
-node --test shared/
+node --test "shared/*.test.js"
 ```
 
 Expected: PASS, 9 tests (2 from Task 1 + 7 here).
@@ -1428,7 +1428,7 @@ test('rejects autorenew whose endsAt has already passed', () => {
 
 ```bash
 cd /Users/joshua/Downloads/DEV/ICS-Projects/PROD/radius-auth-ssid-ver2/infrastructure/lambda-src
-node --test shared/
+node --test "shared/*.test.js"
 ```
 
 Expected: FAIL — `Cannot find module './validate-schedule'`.
@@ -1505,7 +1505,7 @@ module.exports = { validateScheduleInput };
 - [ ] **Step 4: Run to verify they pass**
 
 ```bash
-node --test shared/
+node --test "shared/*.test.js"
 ```
 
 Expected: PASS, 18 tests total.
