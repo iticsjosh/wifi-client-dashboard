@@ -13,6 +13,7 @@ import {
 import {
   bulkDelete as bulkDeleteAction,
   bulkExtend as bulkExtendAction,
+  bulkRevoke as bulkRevokeAction,
   deleteClient as deleteClientAction,
   extendClient as extendClientAction,
   getClients as getClientsAction,
@@ -296,8 +297,8 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
   const [sortField, setSortField] = useState<SortField>('ExpirationTimestamp');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [rowLoading, setRowLoading] = useState<Record<string, boolean>>({});
-  const [bulkAction, setBulkAction] = useState<'extend' | 'delete' | null>(null);
-  const [bulkConfirm, setBulkConfirm] = useState<'extend' | 'delete' | null>(null);
+  const [bulkAction, setBulkAction] = useState<'extend' | 'revoke' | 'delete' | null>(null);
+  const [bulkConfirm, setBulkConfirm] = useState<'extend' | 'revoke' | 'delete' | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [confirmRevokeId, setConfirmRevokeId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -539,6 +540,36 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
     }
   }, [selected, showToast]);
 
+  const handleBulkRevoke = useCallback(async () => {
+    if (selected.size === 0) return;
+    setBulkAction('revoke');
+    setBulkConfirm(null);
+    try {
+      const data = await bulkRevokeAction(Array.from(selected));
+      const succeeded = data.succeeded ?? [];
+      if (succeeded.length > 0) {
+        const map = new Map(succeeded.map((s) => [s.clientId, s.revokedAt]));
+        setClients((p) =>
+          p.map((c) => {
+            const at = map.get(c.ClientID);
+            return at ? { ...c, ExpirationTimestamp: at, RevokedAt: at } : c;
+          })
+        );
+      }
+      const ok = succeeded.length;
+      const fail = data.failed?.length ?? 0;
+      showToast(
+        fail > 0 && ok === 0 ? 'error' : 'success',
+        `${ok} revoked${fail > 0 ? `, ${fail} failed` : ''}`
+      );
+      setSelected(new Set());
+    } catch (err) {
+      showToast('error', err instanceof Error ? err.message : 'Bulk revoke failed');
+    } finally {
+      setBulkAction(null);
+    }
+  }, [selected, showToast]);
+
   const handleBulkDelete = useCallback(async () => {
     if (selected.size === 0) return;
     setBulkAction('delete');
@@ -711,7 +742,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
             {selected.size} client{selected.size !== 1 ? 's' : ''} selected
           </span>
 
-          {bulkConfirm !== 'delete' && (
+          {bulkConfirm === null && (
             <button
               type="button"
               onClick={handleBulkExtend}
@@ -727,6 +758,44 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
               )}
             </button>
           )}
+
+          {bulkConfirm === 'revoke' ? (
+            <span className="flex items-center gap-2">
+              <span className="text-xs text-amber-300">
+                Cut off {selected.size} device{selected.size !== 1 ? 's' : ''} now?
+              </span>
+              <button
+                type="button"
+                onClick={handleBulkRevoke}
+                disabled={bulkAction !== null}
+                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
+              >
+                {bulkAction === 'revoke' ? (
+                  <>
+                    <Spinner /> Revoking…
+                  </>
+                ) : (
+                  'Yes, Revoke'
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={() => setBulkConfirm(null)}
+                className="text-gray-400 hover:text-white text-sm"
+              >
+                Cancel
+              </button>
+            </span>
+          ) : bulkConfirm === null ? (
+            <button
+              type="button"
+              onClick={() => setBulkConfirm('revoke')}
+              disabled={bulkAction !== null}
+              className="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
+            >
+              Revoke Selected
+            </button>
+          ) : null}
 
           {bulkConfirm === 'delete' ? (
             <span className="flex items-center gap-2">
@@ -755,7 +824,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                 Cancel
               </button>
             </span>
-          ) : (
+          ) : bulkConfirm === null ? (
             <button
               type="button"
               onClick={() => setBulkConfirm('delete')}
@@ -764,9 +833,9 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
             >
               Delete Selected
             </button>
-          )}
+          ) : null}
 
-          {bulkConfirm !== 'delete' && (
+          {bulkConfirm === null && (
             <button
               type="button"
               onClick={() => setSelected(new Set())}
