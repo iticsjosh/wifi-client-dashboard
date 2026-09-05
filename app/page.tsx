@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { getClients } from './actions';
 import ClientsTable from '@/components/ClientsTable';
 import type { Client } from '@/lib/types';
@@ -23,7 +24,10 @@ export default async function DashboardPage() {
         <div className="max-w-screen-xl mx-auto">
           <h1 className="text-xl font-semibold text-gray-900">WiFi Client Dashboard</h1>
           <p className="text-sm text-gray-500 mt-0.5">
-            Meraki splash page authorization manager
+            Meraki splash page authorization manager ·{' '}
+            <Link href="/schedules" className="text-blue-600 hover:text-blue-800">
+              Schedules
+            </Link>
           </p>
         </div>
       </header>
