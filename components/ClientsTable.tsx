@@ -17,9 +17,11 @@ import {
   deleteClient as deleteClientAction,
   extendClient as extendClientAction,
   getClients as getClientsAction,
+  getSchedules as getSchedulesAction,
   revokeClient as revokeClientAction,
 } from '@/app/actions';
 import type { Client } from '@/lib/types';
+import ScheduleDialog from './ScheduleDialog';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -145,6 +147,8 @@ interface RowProps {
   isLoading: boolean;
   isPendingDelete: boolean;
   isPendingRevoke: boolean;
+  hasSchedule: boolean;
+  onSchedule: (c: Client) => void;
   onToggleSelect: (id: string) => void;
   onExtend: (id: string) => void;
   onRequestDelete: (id: string) => void;
@@ -163,6 +167,8 @@ const ClientRow = memo(function ClientRow({
   isLoading,
   isPendingDelete,
   isPendingRevoke,
+  hasSchedule,
+  onSchedule,
   onToggleSelect,
   onExtend,
   onRequestDelete,
@@ -206,6 +212,14 @@ const ClientRow = memo(function ClientRow({
       </td>
       <td className="px-4 py-3">
         <StatusBadge status={status} />
+        {hasSchedule && (
+          <span
+            title="This client has an active schedule"
+            className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200"
+          >
+            ⏱ Scheduled
+          </span>
+        )}
       </td>
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
@@ -252,6 +266,15 @@ const ClientRow = memo(function ClientRow({
               Revoke
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={() => onSchedule(client)}
+            disabled={isLoading}
+            className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-indigo-700 border border-indigo-200 hover:bg-indigo-50 disabled:opacity-40 transition-colors"
+          >
+            Schedule
+          </button>
 
           {isPendingDelete ? (
             <span className="inline-flex items-center gap-1">
@@ -303,6 +326,22 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
   const [confirmRevokeId, setConfirmRevokeId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isRefreshing, startRefresh] = useTransition();
+  const [scheduleFor, setScheduleFor] = useState<Client | null>(null);
+  const [scheduledIds, setScheduledIds] = useState<Set<string>>(new Set());
+
+  const loadSchedules = useCallback(async () => {
+    try {
+      const rows = await getSchedulesAction();
+      // Cancelled schedules come back with Enabled: false — filter is load-bearing.
+      setScheduledIds(new Set(rows.filter((r) => r.Enabled).map((r) => r.ClientID)));
+    } catch {
+      // A schedule-badge failure must not break the table.
+    }
+  }, []);
+
+  useEffect(() => {
+    loadSchedules();
+  }, [loadSchedules]);
 
   // `useDeferredValue` keeps the input box snappy while the (potentially large)
   // filter/sort recomputation runs at lower priority.
@@ -718,6 +757,8 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                     isLoading={!!rowLoading[client.ClientID]}
                     isPendingDelete={confirmDeleteId === client.ClientID}
                     isPendingRevoke={confirmRevokeId === client.ClientID}
+                    hasSchedule={scheduledIds.has(client.ClientID)}
+                    onSchedule={setScheduleFor}
                     onToggleSelect={toggleRow}
                     onExtend={handleExtend}
                     onRequestDelete={handleRequestDelete}
@@ -845,6 +886,17 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
             </button>
           )}
         </div>
+      )}
+
+      {scheduleFor && (
+        <ScheduleDialog
+          client={scheduleFor}
+          onClose={() => setScheduleFor(null)}
+          onCreated={(m) => {
+            showToast('success', m);
+            loadSchedules();
+          }}
+        />
       )}
     </div>
   );
