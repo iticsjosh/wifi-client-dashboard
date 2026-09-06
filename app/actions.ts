@@ -40,7 +40,18 @@ async function apiFetch<T>(
 ): Promise<T> {
   const { method = 'GET', body, cache = 'no-store' } = init;
 
-  const headers: Record<string, string> = {};
+  // The API's only gate. API Gateway has no authorizer, so a request without
+  // this header is refused with a 403 by the Lambda before any routing.
+  // Missing here would mean every action fails — surface it as a config error
+  // rather than a stream of 403s.
+  const apiKey = process.env.DASHBOARD_API_KEY;
+  if (!apiKey) {
+    throw new Error(
+      'DASHBOARD_API_KEY is not set. Add it in Cloudflare → Pages → Settings → Variables & Secrets.'
+    );
+  }
+
+  const headers: Record<string, string> = { 'X-Dashboard-Key': apiKey };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
 
   const res = await fetch(`${apiUrl()}${path}`, {
