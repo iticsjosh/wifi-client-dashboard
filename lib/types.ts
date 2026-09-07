@@ -65,6 +65,11 @@ export interface Schedule {
   Note?: string;
 }
 
+export interface BulkScheduleResponse {
+  succeeded: string[];
+  failed: Array<{ clientId: string; error?: string }>;
+}
+
 export interface CreateScheduleInput {
   kind: ScheduleKind;
   action: ScheduleAction;

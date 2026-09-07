@@ -9,10 +9,12 @@
  * and never expose `DASHBOARD_API_URL` to the browser.
  */
 
+import { settleBulk } from '@/lib/schedule';
 import type {
   BulkDeleteResponse,
   BulkExtendResponse,
   BulkRevokeResponse,
+  BulkScheduleResponse,
   Client,
   CreateScheduleInput,
   ExtendResult,
@@ -47,7 +49,7 @@ async function apiFetch<T>(
   const apiKey = process.env.DASHBOARD_API_KEY;
   if (!apiKey) {
     throw new Error(
-      'DASHBOARD_API_KEY is not set. Add it in Cloudflare → Pages → Settings → Variables & Secrets.'
+      'DASHBOARD_API_KEY is not set. Add it in Cloudflare → Worker → Settings → Variables & Secrets.'
     );
   }
 
@@ -149,6 +151,32 @@ export async function getSchedules(): Promise<Schedule[]> {
 
 export async function createSchedule(input: CreateScheduleInput): Promise<Schedule> {
   return apiFetch<Schedule>('/schedules', { method: 'POST', body: input });
+}
+
+/**
+ * Create the same schedule for many clients.
+ *
+ * The API has no bulk-schedule route, so this fans out one POST per client
+ * from inside the Worker — one browser round-trip instead of N. Chunked so a
+ * 100-client selection doesn't open 100 sockets at once; partial failures are
+ * reported rather than thrown, matching bulkExtend/bulkRevoke.
+ */
+export async function bulkCreateSchedule(
+  clientIds: string[],
+  input: Omit<CreateScheduleInput, 'clientId'>
+): Promise<BulkScheduleResponse> {
+  if (clientIds.length === 0) return { succeeded: [], failed: [] };
+
+  const CHUNK = 5;
+  const results: PromiseSettledResult<unknown>[] = [];
+  for (let i = 0; i < clientIds.length; i += CHUNK) {
+    results.push(
+      ...(await Promise.allSettled(
+        clientIds.slice(i, i + CHUNK).map((clientId) => createSchedule({ ...input, clientId }))
+      ))
+    );
+  }
+  return settleBulk(clientIds, results);
 }
 
 export async function cancelSchedule(scheduleId: string): Promise<{ ok: true }> {
