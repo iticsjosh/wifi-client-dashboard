@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  memo,
   useCallback,
   useDeferredValue,
   useEffect,
@@ -20,77 +19,14 @@ import {
   getSchedules as getSchedulesAction,
   revokeClient as revokeClientAction,
 } from '@/app/actions';
+import { getStatus, type Status } from '@/lib/clients';
 import type { Client } from '@/lib/types';
+import { ClientCard, ClientRow, type RowProps } from './ClientRow';
 import ScheduleDialog from './ScheduleDialog';
+import { Spinner, Toast } from './ui';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type Status = 'active' | 'expiring' | 'expired';
 type SortField = 'ClientName' | 'ExpirationTimestamp' | 'ConnectionTimestamp' | 'SSID';
 type StatusFilter = 'all' | Status;
-
-// ─── Pure helpers ─────────────────────────────────────────────────────────────
-
-const ONE_DAY_MS = 86_400_000;
-const FOURTEEN_DAYS_MS = 14 * ONE_DAY_MS;
-
-function getStatus(expiration: string | undefined, now: number): Status {
-  if (!expiration) return 'expired';
-  const ms = new Date(expiration).getTime() - now;
-  if (ms < 0) return 'expired';
-  if (ms < FOURTEEN_DAYS_MS) return 'expiring';
-  return 'active';
-}
-
-const dateFormatter = new Intl.DateTimeFormat('en-SG', {
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  timeZone: 'Asia/Singapore',
-});
-
-function formatDate(ts?: string): string {
-  if (!ts) return '—';
-  try {
-    return dateFormatter.format(new Date(ts));
-  } catch {
-    return ts;
-  }
-}
-
-function daysUntil(ts: string, now: number): string {
-  const days = Math.ceil((new Date(ts).getTime() - now) / ONE_DAY_MS);
-  if (days < 0) return `${Math.abs(days)}d ago`;
-  if (days === 0) return 'today';
-  return `in ${days}d`;
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-const StatusBadge = memo(function StatusBadge({ status }: { status: Status }) {
-  const map = {
-    active: { bg: 'bg-green-100 text-green-800', label: 'Active' },
-    expiring: { bg: 'bg-yellow-100 text-yellow-800', label: 'Expiring Soon' },
-    expired: { bg: 'bg-red-100 text-red-800', label: 'Expired' },
-  } as const;
-  const { bg, label } = map[status];
-  return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${bg}`}>
-      {label}
-    </span>
-  );
-});
-
-function Spinner() {
-  return (
-    <svg className="animate-spin h-3 w-3" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-    </svg>
-  );
-}
 
 function SortButton({
   field,
@@ -113,203 +49,14 @@ function SortButton({
       className="flex items-center gap-1 hover:text-gray-700 focus:outline-none"
     >
       {children}
-      <span className={active ? 'text-gray-600' : 'text-gray-300'}>
-        {active ? (dir === 'asc' ? '↑' : '↓') : '↕'}
+      {/* Geometric-shape triangles, not the arrow block — U+2195 renders as an
+          emoji on iOS and as tofu where font coverage is thin. */}
+      <span className={`text-[9px] ${active ? 'text-gray-600' : 'text-gray-300'}`}>
+        {active && dir === 'desc' ? '▼' : '▲'}
       </span>
     </button>
   );
 }
-
-function Toast({ type, message }: { type: 'success' | 'error'; message: string }) {
-  return (
-    <div
-      role="status"
-      className={`fixed top-4 right-4 z-50 flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-white text-sm max-w-sm ${
-        type === 'success' ? 'bg-green-600' : 'bg-red-600'
-      }`}
-    >
-      <span aria-hidden="true">{type === 'success' ? '✓' : '✕'}</span>
-      <span>{message}</span>
-    </div>
-  );
-}
-
-// ─── Memoized Row ─────────────────────────────────────────────────────────────
-//
-// Extracted + memoized so per-client `rowLoading` state changes don't re-render
-// every other row. Rendered ~hundreds of times in worst case; this is the
-// single biggest perf win in this component.
-
-interface RowProps {
-  client: Client;
-  status: Status;
-  isSelected: boolean;
-  isLoading: boolean;
-  isPendingDelete: boolean;
-  isPendingRevoke: boolean;
-  hasSchedule: boolean;
-  onSchedule: (c: Client) => void;
-  onToggleSelect: (id: string) => void;
-  onExtend: (id: string) => void;
-  onRequestDelete: (id: string) => void;
-  onCancelDelete: () => void;
-  onConfirmDelete: (id: string) => void;
-  onRequestRevoke: (id: string) => void;
-  onCancelRevoke: () => void;
-  onConfirmRevoke: (id: string) => void;
-  now: number;
-}
-
-const ClientRow = memo(function ClientRow({
-  client,
-  status,
-  isSelected,
-  isLoading,
-  isPendingDelete,
-  isPendingRevoke,
-  hasSchedule,
-  onSchedule,
-  onToggleSelect,
-  onExtend,
-  onRequestDelete,
-  onCancelDelete,
-  onConfirmDelete,
-  onRequestRevoke,
-  onCancelRevoke,
-  onConfirmRevoke,
-  now,
-}: RowProps) {
-  return (
-    <tr className={`transition-colors ${isSelected ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
-      <td className="px-4 py-3">
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={() => onToggleSelect(client.ClientID)}
-          className="rounded border-gray-300"
-          aria-label={`Select ${client.ClientName ?? client.ClientID}`}
-        />
-      </td>
-      <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">
-        {client.ClientName || <span className="text-gray-400 italic">Unknown</span>}
-      </td>
-      <td className="px-4 py-3 font-mono text-gray-500 whitespace-nowrap">
-        {client.MacAddress || client.ClientID}
-      </td>
-      <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-        {client.SSID || <span className="text-gray-400">—</span>}
-      </td>
-      <td className="px-4 py-3 text-gray-500 whitespace-nowrap">
-        {formatDate(client.ConnectionTimestamp)}
-      </td>
-      <td className="px-4 py-3 whitespace-nowrap">
-        <span className="text-gray-700">{formatDate(client.ExpirationTimestamp)}</span>
-        {client.ExpirationTimestamp && (
-          <span className="block text-xs text-gray-400 mt-0.5">
-            {daysUntil(client.ExpirationTimestamp, now)}
-          </span>
-        )}
-      </td>
-      <td className="px-4 py-3">
-        <StatusBadge status={status} />
-        {hasSchedule && (
-          <span
-            title="This client has an active schedule"
-            className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200"
-          >
-            ⏱ Scheduled
-          </span>
-        )}
-      </td>
-      <td className="px-4 py-3">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => onExtend(client.ClientID)}
-            disabled={isLoading || isPendingDelete || isPendingRevoke}
-            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            {isLoading ? (
-              <>
-                <Spinner /> Extending…
-              </>
-            ) : (
-              'Extend'
-            )}
-          </button>
-
-          {isPendingRevoke ? (
-            <span className="inline-flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => onConfirmRevoke(client.ClientID)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium bg-amber-600 text-white hover:bg-amber-700 transition-colors"
-              >
-                Cut off?
-              </button>
-              <button
-                type="button"
-                onClick={onCancelRevoke}
-                className="px-2 py-1.5 rounded-md text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
-              >
-                Cancel
-              </button>
-            </span>
-          ) : (
-            <button
-              type="button"
-              onClick={() => onRequestRevoke(client.ClientID)}
-              disabled={isLoading || isPendingDelete}
-              title="Immediately deauthorize this device on Meraki"
-              className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-amber-700 border border-amber-300 hover:bg-amber-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Revoke
-            </button>
-          )}
-
-          <button
-            type="button"
-            onClick={() => onSchedule(client)}
-            disabled={isLoading}
-            className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-indigo-700 border border-indigo-200 hover:bg-indigo-50 disabled:opacity-40 transition-colors"
-          >
-            Schedule
-          </button>
-
-          {isPendingDelete ? (
-            <span className="inline-flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => onConfirmDelete(client.ClientID)}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium bg-red-600 text-white hover:bg-red-700 transition-colors"
-              >
-                Confirm?
-              </button>
-              <button
-                type="button"
-                onClick={onCancelDelete}
-                className="px-2 py-1.5 rounded-md text-xs font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
-              >
-                Cancel
-              </button>
-            </span>
-          ) : (
-            <button
-              type="button"
-              onClick={() => onRequestDelete(client.ClientID)}
-              disabled={isLoading || isPendingRevoke}
-              className="inline-flex items-center px-3 py-1.5 rounded-md text-xs font-medium text-red-600 border border-red-200 hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Delete
-            </button>
-          )}
-        </div>
-      </td>
-    </tr>
-  );
-});
-
-// ─── Main component ───────────────────────────────────────────────────────────
 
 export default function ClientsTable({ initialClients }: { initialClients: Client[] }) {
   const [clients, setClients] = useState<Client[]>(initialClients);
@@ -326,7 +73,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
   const [confirmRevokeId, setConfirmRevokeId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [isRefreshing, startRefresh] = useTransition();
-  const [scheduleFor, setScheduleFor] = useState<Client | null>(null);
+  const [scheduleFor, setScheduleFor] = useState<Client[] | null>(null);
   const [scheduledIds, setScheduledIds] = useState<Set<string>>(new Set());
 
   const loadSchedules = useCallback(async () => {
@@ -462,6 +209,13 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
 
   const handleRequestRevoke = useCallback((id: string) => setConfirmRevokeId(id), []);
   const handleCancelRevoke = useCallback(() => setConfirmRevokeId(null), []);
+
+  const handleScheduleOne = useCallback((c: Client) => setScheduleFor([c]), []);
+
+  const handleScheduleSelected = useCallback(() => {
+    const picked = clients.filter((c) => selected.has(c.ClientID));
+    if (picked.length > 0) setScheduleFor(picked);
+  }, [clients, selected]);
 
   // ── Actions ────────────────────────────────────────────────────────────────
 
@@ -637,8 +391,34 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
 
   // ── Render ─────────────────────────────────────────────────────────────────
 
+  // One props object per client, spread into either layout. The spread is what
+  // keeps `memo` working — it compares the fields, not this object's identity —
+  // so a selection change still re-renders only the rows that actually changed.
+  const rowProps = (client: Client): RowProps => ({
+    client,
+    status: getStatus(client.ExpirationTimestamp, now),
+    isSelected: selected.has(client.ClientID),
+    isLoading: !!rowLoading[client.ClientID],
+    isPendingDelete: confirmDeleteId === client.ClientID,
+    isPendingRevoke: confirmRevokeId === client.ClientID,
+    hasSchedule: scheduledIds.has(client.ClientID),
+    onSchedule: handleScheduleOne,
+    onToggleSelect: toggleRow,
+    onExtend: handleExtend,
+    onRequestDelete: handleRequestDelete,
+    onCancelDelete: handleCancelDelete,
+    onConfirmDelete: handleConfirmDelete,
+    onRequestRevoke: handleRequestRevoke,
+    onCancelRevoke: handleCancelRevoke,
+    onConfirmRevoke: handleConfirmRevoke,
+    now,
+  });
+
+  const allSelected = filtered.length > 0 && selected.size === filtered.length;
+  const empty = filtered.length === 0;
+
   return (
-    <div className="space-y-4 pb-24">
+    <div className="space-y-4 pb-28">
       {toast && <Toast type={toast.type} message={toast.message} />}
 
       {/* Stats */}
@@ -663,12 +443,12 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
           placeholder="Search name or MAC…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm w-52 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border border-gray-300 rounded-md px-3 py-2 text-base sm:text-sm w-full sm:w-52 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <select
           value={ssidFilter}
           onChange={(e) => setSsidFilter(e.target.value)}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 sm:flex-none border border-gray-300 rounded-md px-3 py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="all">All SSIDs</option>
           {ssids.map((s) => (
@@ -680,14 +460,14 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-          className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="flex-1 sm:flex-none border border-gray-300 rounded-md px-3 py-2 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="all">All Statuses</option>
           <option value="active">Active</option>
           <option value="expiring">Expiring Soon</option>
           <option value="expired">Expired</option>
         </select>
-        <span className="text-sm text-gray-400 ml-auto">
+        <span className="text-sm text-gray-400 sm:ml-auto">
           {filtered.length} of {clients.length} shown
         </span>
         <button
@@ -700,8 +480,30 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
         </button>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      {/* Mobile: select-all + cards. Below `md` only — the table is hidden here. */}
+      <div className="md:hidden space-y-3">
+        {!empty && (
+          <label className="flex items-center gap-2 px-1 text-sm text-gray-600">
+            <input
+              type="checkbox"
+              checked={allSelected}
+              onChange={toggleAll}
+              className="rounded border-gray-300 w-5 h-5"
+            />
+            Select all {filtered.length}
+          </label>
+        )}
+        {empty ? (
+          <p className="bg-white rounded-lg border border-gray-200 py-10 text-center text-gray-400">
+            No clients match the current filters.
+          </p>
+        ) : (
+          filtered.map((client) => <ClientCard key={client.ClientID} {...rowProps(client)} />)
+        )}
+      </div>
+
+      {/* Desktop: the table, unchanged in structure. */}
+      <div className="hidden md:block bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -709,9 +511,9 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                 <th className="px-4 py-3 w-10">
                   <input
                     type="checkbox"
-                    checked={filtered.length > 0 && selected.size === filtered.length}
+                    checked={allSelected}
                     onChange={toggleAll}
-                    className="rounded border-gray-300"
+                    className="rounded border-gray-300 w-4 h-4"
                     aria-label="Select all"
                   />
                 </th>
@@ -737,39 +539,17 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                   </SortButton>
                 </th>
                 <th className="px-4 py-3 text-left">Status</th>
-                <th className="px-4 py-3 text-left">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {filtered.length === 0 ? (
+              {empty ? (
                 <tr>
-                  <td colSpan={8} className="px-4 py-10 text-center text-gray-400">
+                  <td colSpan={7} className="px-4 py-10 text-center text-gray-400">
                     No clients match the current filters.
                   </td>
                 </tr>
               ) : (
-                filtered.map((client) => (
-                  <ClientRow
-                    key={client.ClientID}
-                    client={client}
-                    status={getStatus(client.ExpirationTimestamp, now)}
-                    isSelected={selected.has(client.ClientID)}
-                    isLoading={!!rowLoading[client.ClientID]}
-                    isPendingDelete={confirmDeleteId === client.ClientID}
-                    isPendingRevoke={confirmRevokeId === client.ClientID}
-                    hasSchedule={scheduledIds.has(client.ClientID)}
-                    onSchedule={setScheduleFor}
-                    onToggleSelect={toggleRow}
-                    onExtend={handleExtend}
-                    onRequestDelete={handleRequestDelete}
-                    onCancelDelete={handleCancelDelete}
-                    onConfirmDelete={handleConfirmDelete}
-                    onRequestRevoke={handleRequestRevoke}
-                    onCancelRevoke={handleCancelRevoke}
-                    onConfirmRevoke={handleConfirmRevoke}
-                    now={now}
-                  />
-                ))
+                filtered.map((client) => <ClientRow key={client.ClientID} {...rowProps(client)} />)
               )}
             </tbody>
           </table>
@@ -778,30 +558,41 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
 
       {/* Bulk action bar */}
       {selected.size > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-gray-900 text-white px-5 py-3 rounded-full shadow-2xl">
-          <span className="text-sm font-medium">
+        <div className="fixed bottom-0 inset-x-0 sm:bottom-6 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-40 flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-3 bg-gray-900 text-white px-4 py-3 sm:px-5 sm:rounded-full shadow-2xl">
+          <span className="text-sm font-medium w-full sm:w-auto text-center shrink-0 whitespace-nowrap">
             {selected.size} client{selected.size !== 1 ? 's' : ''} selected
           </span>
 
           {bulkConfirm === null && (
-            <button
-              type="button"
-              onClick={handleBulkExtend}
-              disabled={bulkAction !== null}
-              className="flex items-center gap-1.5 bg-blue-500 hover:bg-blue-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
-            >
-              {bulkAction === 'extend' ? (
-                <>
-                  <Spinner /> Extending…
-                </>
-              ) : (
-                'Extend All'
-              )}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={handleBulkExtend}
+                disabled={bulkAction !== null}
+                className="flex items-center gap-1.5 bg-blue-500 hover:bg-blue-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap transition-colors"
+              >
+                {bulkAction === 'extend' ? (
+                  <>
+                    <Spinner /> Extending…
+                  </>
+                ) : (
+                  'Extend'
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleScheduleSelected}
+                disabled={bulkAction !== null}
+                className="flex items-center gap-1.5 bg-indigo-500 hover:bg-indigo-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap transition-colors"
+              >
+                Schedule
+              </button>
+            </>
           )}
 
           {bulkConfirm === 'revoke' ? (
-            <span className="flex items-center gap-2">
+            <span className="flex flex-wrap items-center justify-center gap-2">
               <span className="text-xs text-amber-300">
                 Cut off {selected.size} device{selected.size !== 1 ? 's' : ''} now?
               </span>
@@ -809,7 +600,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                 type="button"
                 onClick={handleBulkRevoke}
                 disabled={bulkAction !== null}
-                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
+                className="flex items-center gap-1.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap transition-colors"
               >
                 {bulkAction === 'revoke' ? (
                   <>
@@ -822,7 +613,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
               <button
                 type="button"
                 onClick={() => setBulkConfirm(null)}
-                className="text-gray-400 hover:text-white text-sm"
+                className="text-gray-400 hover:text-white text-sm px-2 py-2 whitespace-nowrap"
               >
                 Cancel
               </button>
@@ -832,14 +623,14 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
               type="button"
               onClick={() => setBulkConfirm('revoke')}
               disabled={bulkAction !== null}
-              className="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
+              className="flex items-center gap-1.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap transition-colors"
             >
-              Revoke Selected
+              Revoke
             </button>
           ) : null}
 
           {bulkConfirm === 'delete' ? (
-            <span className="flex items-center gap-2">
+            <span className="flex flex-wrap items-center justify-center gap-2">
               <span className="text-xs text-red-300">
                 Delete {selected.size} record{selected.size !== 1 ? 's' : ''}?
               </span>
@@ -847,7 +638,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
                 type="button"
                 onClick={handleBulkDelete}
                 disabled={bulkAction !== null}
-                className="flex items-center gap-1.5 bg-red-500 hover:bg-red-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
+                className="flex items-center gap-1.5 bg-red-500 hover:bg-red-400 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap transition-colors"
               >
                 {bulkAction === 'delete' ? (
                   <>
@@ -860,7 +651,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
               <button
                 type="button"
                 onClick={() => setBulkConfirm(null)}
-                className="text-gray-400 hover:text-white text-sm"
+                className="text-gray-400 hover:text-white text-sm px-2 py-2 whitespace-nowrap"
               >
                 Cancel
               </button>
@@ -870,9 +661,9 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
               type="button"
               onClick={() => setBulkConfirm('delete')}
               disabled={bulkAction !== null}
-              className="flex items-center gap-1.5 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
+              className="flex items-center gap-1.5 bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white text-sm font-medium px-4 py-2 rounded-full whitespace-nowrap transition-colors"
             >
-              Delete Selected
+              Delete
             </button>
           ) : null}
 
@@ -880,7 +671,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
             <button
               type="button"
               onClick={() => setSelected(new Set())}
-              className="text-gray-400 hover:text-white text-sm"
+              className="text-gray-400 hover:text-white text-sm px-2 py-2 whitespace-nowrap"
             >
               ✕ Clear
             </button>
@@ -890,10 +681,11 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
 
       {scheduleFor && (
         <ScheduleDialog
-          client={scheduleFor}
+          clients={scheduleFor}
           onClose={() => setScheduleFor(null)}
           onCreated={(m) => {
             showToast('success', m);
+            setSelected(new Set());
             loadSchedules();
           }}
         />
