@@ -31,3 +31,8 @@ dev.log
 # local env files
 .env*.local
 .env
+
+# Tool + build artifacts
+.serena/
+.infisical.json
+tsconfig.tsbuildinfo
