@@ -9,7 +9,7 @@
  * and never expose `DASHBOARD_API_URL` to the browser.
  */
 
-import { settleBulk } from '@/lib/schedule';
+import { batch, settleBulk } from '@/lib/schedule';
 import type {
   BulkDeleteResponse,
   BulkExtendResponse,
@@ -153,13 +153,22 @@ export async function createSchedule(input: CreateScheduleInput): Promise<Schedu
   return apiFetch<Schedule>('/schedules', { method: 'POST', body: input });
 }
 
+/** Requests per second, to stay under the Meraki rate limit the Lambda calls into. */
+const RATE = 8;
+
 /**
  * Create the same schedule for many clients.
  *
- * The API has no bulk-schedule route, so this fans out one POST per client
- * from inside the Worker — one browser round-trip instead of N. Chunked so a
- * 100-client selection doesn't open 100 sockets at once; partial failures are
- * reported rather than thrown, matching bulkExtend/bulkRevoke.
+ * The API has no bulk-schedule route, so this fans out one POST per client from
+ * inside the Worker — one browser round-trip instead of N. Two limits shape it:
+ *
+ *   • Meraki rate-limits the Lambda, so chunks of RATE are paced one per second.
+ *     Elapsed time is not a concern: a schedule row is a marker the script acts
+ *     on later, so a slow write changes nothing about when access is cut off.
+ *   • Cloudflare's Free plan caps a request at 50 subrequests, so callers must
+ *     batch by `SCHEDULE_BATCH` across calls (see `batch` in lib/schedule).
+ *
+ * Partial failures are reported rather than thrown, matching bulkExtend/bulkRevoke.
  */
 export async function bulkCreateSchedule(
   clientIds: string[],
@@ -167,14 +176,20 @@ export async function bulkCreateSchedule(
 ): Promise<BulkScheduleResponse> {
   if (clientIds.length === 0) return { succeeded: [], failed: [] };
 
-  const CHUNK = 5;
   const results: PromiseSettledResult<unknown>[] = [];
-  for (let i = 0; i < clientIds.length; i += CHUNK) {
+  for (const chunk of batch(clientIds, RATE)) {
+    const startedAt = Date.now();
     results.push(
       ...(await Promise.allSettled(
-        clientIds.slice(i, i + CHUNK).map((clientId) => createSchedule({ ...input, clientId }))
+        chunk.map((clientId) => createSchedule({ ...input, clientId }))
       ))
     );
+    // Pad to a full second so the next chunk keeps us at RATE/s. Skipped after
+    // the last chunk, and whenever the chunk already took longer than a second.
+    const rest = 1000 - (Date.now() - startedAt);
+    if (rest > 0 && results.length < clientIds.length) {
+      await new Promise((r) => setTimeout(r, rest));
+    }
   }
   return settleBulk(clientIds, results);
 }

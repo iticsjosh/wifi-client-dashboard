@@ -14,7 +14,7 @@ export interface RowProps {
   isPendingRevoke: boolean;
   hasSchedule: boolean;
   onSchedule: (c: Client) => void;
-  onToggleSelect: (id: string) => void;
+  onToggleSelect: (id: string, shiftKey: boolean) => void;
   onExtend: (id: string) => void;
   onRequestDelete: (id: string) => void;
   onCancelDelete: () => void;
@@ -24,6 +24,22 @@ export interface RowProps {
   onConfirmRevoke: (id: string) => void;
   now: number;
 }
+
+/**
+ * Was Shift held for the click now in flight?
+ *
+ * `change` does not carry modifier keys, so `mousedown` (which fires first)
+ * stashes it here and the handler reads it a moment later. Module-level is safe
+ * and simpler than a ref per row: a pointer produces one mousedown→change pair
+ * at a time, and `readShift` clears the flag so a keyboard Space — which fires
+ * `change` with no preceding `mousedown` — can never read a stale `true`.
+ */
+let shiftHeld = false;
+const readShift = () => {
+  const held = shiftHeld;
+  shiftHeld = false;
+  return held;
+};
 
 // Card-only action cluster. Desktop rows have no buttons — the bulk bar drives
 // every action there — so this is sized for touch: 40px min height, full-width
@@ -127,10 +143,24 @@ export const ClientRow = memo(function ClientRow(p: RowProps) {
   return (
     <tr className={`transition-colors ${isSelected ? 'bg-blue-50/60' : 'hover:bg-gray-50'}`}>
       <td className="px-4 py-3">
+        {/* Controlled by `checked` + `onChange`, so React owns the box and always
+            repaints it to match `isSelected`. Do NOT switch to onClick +
+            preventDefault to read `shiftKey`: reverting the native toggle leaves
+            the DOM disagreeing with React for any row whose `isSelected` did not
+            change — the anchor and the clicked row in a range both render
+            unchecked while being selected. Verified in a browser.
+            The modifier comes from `onMouseDown` instead, which fires first and
+            carries it; that handler also kills the shift-click text-selection
+            gesture, which would otherwise smear a highlight across the spanned
+            rows. It is scoped to the checkbox, so the cells stay copyable. */}
         <input
           type="checkbox"
           checked={isSelected}
-          onChange={() => p.onToggleSelect(client.ClientID)}
+          onMouseDown={(e) => {
+            shiftHeld = e.shiftKey;
+            if (e.shiftKey) e.preventDefault();
+          }}
+          onChange={() => p.onToggleSelect(client.ClientID, readShift())}
           className="rounded border-gray-300 w-4 h-4"
           aria-label={`Select ${client.ClientName ?? client.ClientID}`}
         />
@@ -190,7 +220,11 @@ export const ClientCard = memo(function ClientCard(p: RowProps) {
         <input
           type="checkbox"
           checked={isSelected}
-          onChange={() => p.onToggleSelect(client.ClientID)}
+          onMouseDown={(e) => {
+            shiftHeld = e.shiftKey;
+            if (e.shiftKey) e.preventDefault();
+          }}
+          onChange={() => p.onToggleSelect(client.ClientID, readShift())}
           className="rounded border-gray-300 w-5 h-5 mt-0.5 shrink-0"
           aria-label={`Select ${client.ClientName ?? client.ClientID}`}
         />

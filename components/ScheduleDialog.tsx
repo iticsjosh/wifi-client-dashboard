@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { bulkCreateSchedule, createSchedule } from '@/app/actions';
-import { toUtc } from '@/lib/schedule';
-import type { Client, ScheduleKind, ScheduleAction } from '@/lib/types';
+import { batch, SCHEDULE_BATCH, toUtc } from '@/lib/schedule';
+import type { BulkScheduleResponse, Client, ScheduleKind, ScheduleAction } from '@/lib/types';
 
 export default function ScheduleDialog({
   clients,
@@ -19,6 +19,7 @@ export default function ScheduleDialog({
   const [when, setWhen] = useState('');
   const [note, setNote] = useState('');
   const [saving, setSaving] = useState(false);
+  const [done, setDone] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   const single = clients.length === 1;
@@ -26,13 +27,20 @@ export default function ScheduleDialog({
     ? clients[0].ClientName || clients[0].ClientID
     : `${clients.length} clients`;
 
+  // Closing is blocked while saving. A large batch runs for tens of seconds,
+  // and dismissing mid-run would not stop the writes — it would just hide them,
+  // leaving the user with no count and no idea what landed.
+  const closeIfIdle = useCallback(() => {
+    if (!saving) onClose();
+  }, [saving, onClose]);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') closeIfIdle();
     };
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [closeIfIdle]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,6 +49,7 @@ export default function ScheduleDialog({
       return;
     }
     setSaving(true);
+    setDone(0);
     setError(null);
 
     // One kind/action/time applies to every selected client.
@@ -58,10 +67,18 @@ export default function ScheduleDialog({
         return;
       }
 
-      const { succeeded, failed } = await bulkCreateSchedule(
-        clients.map((c) => c.ClientID),
-        input
-      );
+      // One call per batch, not one call for everything: each server action is
+      // a separate Worker request, and only a fresh request gets a fresh
+      // subrequest budget. See `batch` in lib/schedule for why that matters.
+      const succeeded: BulkScheduleResponse['succeeded'] = [];
+      const failed: BulkScheduleResponse['failed'] = [];
+      for (const ids of batch(clients.map((c) => c.ClientID), SCHEDULE_BATCH)) {
+        const r = await bulkCreateSchedule(ids, input);
+        succeeded.push(...r.succeeded);
+        failed.push(...r.failed);
+        setDone((n) => n + ids.length);
+      }
+
       // Partial failure still closes — the successes are real and the toast
       // carries the count, matching how bulk extend/revoke behave.
       if (succeeded.length === 0) {
@@ -83,7 +100,7 @@ export default function ScheduleDialog({
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 sm:px-4"
-      onClick={onClose}
+      onClick={closeIfIdle}
     >
       <div
         role="dialog"
@@ -162,7 +179,8 @@ export default function ScheduleDialog({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
+              disabled={saving}
+              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-40"
             >
               Cancel
             </button>
@@ -171,7 +189,13 @@ export default function ScheduleDialog({
               disabled={saving}
               className="px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
             >
-              {saving ? 'Saving…' : single ? 'Schedule' : `Schedule ${clients.length}`}
+              {saving
+                ? single
+                  ? 'Saving…'
+                  : `Saving ${done}/${clients.length}…`
+                : single
+                ? 'Schedule'
+                : `Schedule ${clients.length}`}
             </button>
           </div>
         </form>

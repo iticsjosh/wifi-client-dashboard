@@ -20,6 +20,7 @@ import {
   revokeClient as revokeClientAction,
 } from '@/app/actions';
 import { getStatus, type Status } from '@/lib/clients';
+import { rangeIds } from '@/lib/schedule';
 import type { Client } from '@/lib/types';
 import { ClientCard, ClientRow, type RowProps } from './ClientRow';
 import ScheduleDialog from './ScheduleDialog';
@@ -187,10 +188,30 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
     });
   }, []);
 
-  const toggleRow = useCallback((id: string) => {
+  // Anchor for shift-click, and the visible order it indexes into. Both are refs
+  // so `toggleRow` never changes identity — it is a prop on every memoized row,
+  // and `filtered` is rebuilt on each keystroke.
+  const anchorRef = useRef<string | null>(null);
+  const filteredRef = useRef(filtered);
+  filteredRef.current = filtered;
+
+  const toggleRow = useCallback((id: string, shiftKey = false) => {
+    const ids = filteredRef.current.map((c) => c.ClientID);
+    const from = anchorRef.current === null ? -1 : ids.indexOf(anchorRef.current);
+    const to = ids.indexOf(id);
+
+    // Shift with a live anchor selects the span; anything else toggles one row.
+    // The anchor moves either way, so a range can be chained off the last click.
+    // `from === -1` covers a first click and an anchor filtered out since.
+    const span = shiftKey && from !== -1 && to !== -1 ? rangeIds(ids, from, to) : null;
+    anchorRef.current = id;
+
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(id)) next.delete(id);
+      if (span) {
+        // Additive, like Finder and Gmail: a range never clears prior picks.
+        for (const rid of span) next.add(rid);
+      } else if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
@@ -508,7 +529,7 @@ export default function ClientsTable({ initialClients }: { initialClients: Clien
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider">
               <tr>
-                <th className="px-4 py-3 w-10">
+                <th className="px-4 py-3 w-10" title="Tip: shift-click to select a range">
                   <input
                     type="checkbox"
                     checked={allSelected}

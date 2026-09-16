@@ -7,7 +7,7 @@
 
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { settleBulk, toUtc } from './schedule.ts';
+import { batch, rangeIds, SCHEDULE_BATCH, settleBulk, toUtc } from './schedule.ts';
 
 test('toUtc keeps datetime-local wall-clock time in the local zone', () => {
   // 14:30 SGT (UTC+8) is 06:30 UTC the same day.
@@ -42,4 +42,26 @@ test('settleBulk stringifies a non-Error rejection', () => {
 test('settleBulk handles the all-failed case the dialog branches on', () => {
   const out = settleBulk(['a'], [{ status: 'rejected', reason: new Error('x') }]);
   assert.equal(out.succeeded.length, 0);
+});
+
+test('batch splits into full chunks plus a short remainder, losing nothing', () => {
+  assert.deepEqual(batch([1, 2, 3, 4, 5], 2), [[1, 2], [3, 4], [5]]);
+  assert.deepEqual(batch([], 3), []);
+  assert.deepEqual(batch([1, 2], 5), [[1, 2]]);
+});
+
+test('every batch stays under the Cloudflare free-plan subrequest cap', () => {
+  // The bug this guards: one subrequest per client, and a request that asks for
+  // a 51st is refused by the runtime — the "50 scheduled, 250 failed" report.
+  const ids = Array.from({ length: 300 }, (_, i) => `c${i}`);
+  const batches = batch(ids, SCHEDULE_BATCH);
+  assert.ok(batches.every((b) => b.length < 50));
+  assert.equal(batches.flat().length, 300);
+});
+
+test('rangeIds covers the span inclusively, in either drag direction', () => {
+  const ids = ['a', 'b', 'c', 'd', 'e'];
+  assert.deepEqual(rangeIds(ids, 1, 3), ['b', 'c', 'd']);
+  assert.deepEqual(rangeIds(ids, 3, 1), ['b', 'c', 'd']);
+  assert.deepEqual(rangeIds(ids, 2, 2), ['c']);
 });

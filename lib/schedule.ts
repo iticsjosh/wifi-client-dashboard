@@ -20,6 +20,35 @@ export function toUtc(local: string): string {
 }
 
 /**
+ * Split a list into fixed-size batches.
+ *
+ * Load-bearing for bulk scheduling: the Worker fans out one subrequest per
+ * client, and the Cloudflare **Free plan caps a request at 50 subrequests** —
+ * client 51 is refused by the runtime before it reaches AWS. Each server-action
+ * call is its own request with its own budget, so the browser sends several
+ * calls of `SCHEDULE_BATCH` instead of one call of 300.
+ *
+ * ponytail: a /schedules/bulk route on the Lambda would make this one
+ * subrequest for any size — add it if the extra round trips ever matter.
+ */
+export function batch<T>(items: T[], size: number): T[][] {
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out;
+}
+
+/** Clients per server-action call. Under the 50-subrequest cap, with headroom. */
+export const SCHEDULE_BATCH = 40;
+
+/**
+ * The ids spanned by a shift-click, from the previously clicked row to this one.
+ * Order-independent: dragging a selection upward covers the same rows as down.
+ */
+export function rangeIds(ids: string[], from: number, to: number): string[] {
+  return ids.slice(Math.min(from, to), Math.max(from, to) + 1);
+}
+
+/**
  * Fold per-client settled results into the { succeeded, failed } shape the
  * other bulk actions already return, so the toast copy stays uniform.
  * `clientIds[i]` must correspond to `results[i]`.
